@@ -28,11 +28,32 @@ function App() {
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        responseType: 'blob'
 
-      }).then((result) => {
+      }).then(async (result) => {
         alert('PDF uploaded successfully!');
+
+        const blob = result.data
+        console.log('blob creared...')
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary link element
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'your_file.xlsm'; // The filename for the download
+
+        // Append link to body and click it to start download
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up by removing the link and revoking the blob URL
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url)
       }).catch((err) => {
+        console.log(err)
         alert('Failed to upload PDF.');
       })
 
